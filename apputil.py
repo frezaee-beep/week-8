@@ -1,4 +1,7 @@
 from collections import defaultdict
+import numpy as np
+
+from pygments.lexer import words
 
 
 class MarkovText(object):
@@ -8,16 +11,42 @@ class MarkovText(object):
         self.term_dict = None  # you'll need to build this
 
     def get_term_dict(self):
+     words = self.corpus.split()
 
-        # your code here ...
+     term_dict = defaultdict(list)
 
-        self.term_dict = {}
+     for i in range(len(words) - 1):
+        current_word = words[i]
+        next_word = words[i + 1]
 
-        return None
+        term_dict[current_word].append(next_word)
+
+     self.term_dict = dict(term_dict)
+
+     return self.term_dict
 
 
     def generate(self, seed_term=None, term_count=15):
+        if self.term_dict is None:
+            self.get_term_dict()
 
-        # your code here ...
+        if seed_term is None:
+            current_word = np.random.choice(list(self.term_dict.keys()))
+        else:
+            if seed_term not in self.term_dict:
+                raise ValueError("Seed term is not in the corpus.")
+            current_word = seed_term
 
-        return None
+        generated_words = [current_word]
+
+        for _ in range(term_count - 1):
+            possible_words = self.term_dict.get(current_word)
+
+            if not possible_words:
+                current_word = np.random.choice(list(self.term_dict.keys()))
+            else:
+                current_word = np.random.choice(possible_words)
+
+            generated_words.append(current_word)
+
+        return " ".join(generated_words)
