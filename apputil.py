@@ -1,7 +1,8 @@
 from collections import defaultdict
 import numpy as np
 
-from pygments.lexer import words
+
+
 
 
 class MarkovText(object):
@@ -11,22 +12,25 @@ class MarkovText(object):
         self.term_dict = None  # you'll need to build this
 
     def get_term_dict(self):
-     words = self.corpus.split()
+        """Return a dictionary of words and the words that follow them."""
+        words = self.corpus.split()
 
-     term_dict = defaultdict(list)
+        term_dict = defaultdict(list)
 
-     for i in range(len(words) - 1):
-        current_word = words[i]
-        next_word = words[i + 1]
+        for i in range(len(words) - 1):
+            current_word = words[i]
+            next_word = words[i + 1]
 
-        term_dict[current_word].append(next_word)
+            term_dict[current_word].append(next_word)
 
-     self.term_dict = dict(term_dict)
+        term_dict[words[-1]]
+        self.term_dict = dict(term_dict)
 
-     return self.term_dict
+        return self.term_dict
 
 
     def generate(self, seed_term=None, term_count=15):
+        """Return randomly generated text based on the corpus transitions."""
         if self.term_dict is None:
             self.get_term_dict()
 
